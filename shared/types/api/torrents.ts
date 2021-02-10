@@ -53,6 +53,12 @@ export interface MoveTorrentsOptions {
   isCheckHash: boolean;
 }
 
+// POST /api/torrents/reannounce
+export interface ReannounceTorrentsOptions {
+  // An array of string representing hashes of torrents to be reannounced
+  hashes: Array<TorrentProperties['hash']>;
+}
+
 // POST /api/torrents/start
 export interface StartTorrentsOptions {
   // An array of string representing hashes of torrents to be started

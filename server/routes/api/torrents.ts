@@ -19,6 +19,7 @@ import type {
   CreateTorrentOptions,
   DeleteTorrentsOptions,
   MoveTorrentsOptions,
+  ReannounceTorrentsOptions,
   SetTorrentContentsPropertiesOptions,
   SetTorrentsInitialSeedingOptions,
   SetTorrentsPriorityOptions,
@@ -428,9 +429,28 @@ router.post<unknown, unknown, DeleteTorrentsOptions>('/delete', (req, res) => {
 });
 
 /**
+ * POST /api/torrents/reannounce
+ * @summary Reannounces torrents to trackers
+ * @tags Torrents
+ * @security User
+ * @param {ReannounceTorrentsOptions} - request.body.required - options - application/json
+ * @return {object} 200 - success response - application/json
+ * @return {Error} 500 - failure response - application/json
+ */
+router.post<unknown, unknown, ReannounceTorrentsOptions>('/reannounce', (req, res) => {
+  req.services?.clientGatewayService?.reannounceTorrents(req.body).then(
+    () => {
+      req.services?.clientGatewayService?.fetchTorrentList();
+      res.status(200).json({});
+    },
+    ({code, message}) => res.status(500).json({code, message}),
+  );
+});
+
+/**
  * PATCH /api/torrents/initial-seeding
  * @summary Sets initial seeding mode of torrents.
- * @tags Torrent
+ * @tags Torrents
  * @security User
  * @param {SetTorrentsInitialSeedingOptions} request.body.required - options - application/json
  * @return {object} 200 - success response - application/json
@@ -451,7 +471,7 @@ router.patch<unknown, unknown, SetTorrentsInitialSeedingOptions>('/initial-seedi
 /**
  * PATCH /api/torrents/priority
  * @summary Sets priority of torrents.
- * @tags Torrent
+ * @tags Torrents
  * @security User
  * @param {SetTorrentsPriorityOptions} request.body.required - options - application/json
  * @return {object} 200 - success response - application/json
@@ -475,7 +495,7 @@ router.patch<unknown, unknown, SetTorrentsPriorityOptions>('/priority', (req, re
 /**
  * PATCH /api/torrents/sequential
  * @summary Sets sequential mode of torrents.
- * @tags Torrent
+ * @tags Torrents
  * @security User
  * @param {SetTorrentsSequentialOptions} request.body.required - options - application/json
  * @return {object} 200 - success response - application/json
